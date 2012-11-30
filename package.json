@@ -9,5 +9,8 @@
     "should": "*"
   },
   "main": "./lib/ejs.js",
-  "repository": "git://github.com/christophehurpeau/ejs.git"
+  "repository": "git://github.com/christophehurpeau/ejs.git",
+  "scripts": {
+    "test": "mocha --require should --reporter spec"
+  }
 }

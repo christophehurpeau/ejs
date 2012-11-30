@@ -5,14 +5,14 @@
 var ejs = require('..')
   , fs = require('fs')
   , read = fs.readFileSync
-  , assert = require('assert');
+  , assert = require('should');
 
 /**
  * Load fixture `name`.
  */
 
 function fixture(name) {
-  return read('test/fixtures/' + name, 'utf8');
+  return read('test/fixtures/' + name, 'utf8').replace(/\r/g, '');
 }
 
 /**
@@ -28,6 +28,23 @@ describe('ejs.compile(str, options)', function(){
   it('should compile to a function', function(){
     var fn = ejs.compile('<p>yay</p>');
     fn().should.equal('<p>yay</p>');
+  })
+
+  it('should throw if there are syntax errors', function(){
+    try {
+      ejs.compile(fixture('fail.ejs'));
+    } catch (err) {
+      err.message.should.include('compiling ejs');
+
+      try {
+        ejs.compile(fixture('fail.ejs'), { filename: 'fail.ejs' });
+      } catch (err) {
+        err.message.should.include('fail.ejs');
+        return;
+      }
+    }
+
+    assert(false, 'compiling a file with invalid syntax should throw an exception');
   })
 
   it('should allow customizing delimiters', function(){
